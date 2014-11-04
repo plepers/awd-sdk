@@ -18,14 +18,15 @@ LIBDIR=$(PREFIX)/lib
 INCDIR=$(PREFIX)/include
 BUILDDIR=build
 
-all: dynamic
+all: dynamic static
 
 test: 
 	$(CXX) -dynamic -lawd -o test test.cc
     
 
-install: dynamic 
+install: dynamic static
 	cp $(BUILDDIR)/$(DYLIB) $(LIBDIR)/$(DYLIB)
+	cp $(BUILDDIR)/$(STATLIB) $(LIBDIR)/$(STATLIB)
 	rm -rf $(INCDIR)/awd
 	mkdir -p $(INCDIR)/awd
 	cp -f $(BUILDDIR)/awd/* $(INCDIR)/awd/
@@ -37,7 +38,7 @@ dynamic: $(OBJ)
 	cp include/*.h $(BUILDDIR)/awd/
 
 static: $(OBJ) 
-	ar crs $(STATLIB) $(OBJ)
+	ar crs $(BUILDDIR)/$(STATLIB) $(OBJ)
 
 .c.o:
 	@echo "$< > $@"
