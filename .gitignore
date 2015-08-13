@@ -5,3 +5,10 @@
 *.user
 *.suo
 /cpp-libawd/build
+cpp-libawd/CMakeFiles
+cmake_install.cmake
+cpp-libawd/CMakeCache.txt
+cpp-libawd/install_manifest.txt
+cpp-libawd/libawd.dylib
+cpp-libawd/libawd_static.a
+Makefile
