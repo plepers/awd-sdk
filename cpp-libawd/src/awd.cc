@@ -346,10 +346,7 @@ AWD::flatten_scene(AWDSceneBlock *cur, AWDBlockList *flat_list)
             cur->set_parent(NULL);
         }
         else{
-            bool exportThis=true;
-            if (this->exportEmtpyContainers)
-                exportThis=!cur->isEmpty();
-            if(exportThis)
+            if( !cur->isEmpty() || this->exportEmtpyContainers )
                 cur->prepare_and_add_with_dependencies(flat_list);
 
             cur->isExported=true;
