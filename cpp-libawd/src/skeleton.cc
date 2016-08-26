@@ -6,7 +6,7 @@
 
 #include "platform.h"
 
-AWDSkeletonJoint::AWDSkeletonJoint(const char *name, awd_uint16 name_len, awd_float64 *bind_mtx) :
+AWDSkeletonJoint::AWDSkeletonJoint(const char *name, awd_uint16 name_len, awd_float64 *bind_mtx, awd_uint16 id) :
     AWDNamedElement(name, name_len),
     AWDAttrElement()
 {
@@ -15,6 +15,7 @@ AWDSkeletonJoint::AWDSkeletonJoint(const char *name, awd_uint16 name_len, awd_fl
     this->last_child = NULL;
     this->num_children = 0;
     this->bind_mtx = NULL;
+    this->id = id;
 
     set_bind_mtx(bind_mtx);
 }
@@ -142,15 +143,13 @@ AWDSkeletonJoint::calc_num_children()
 }
 
 int
-AWDSkeletonJoint::write_joint(int fd, awd_uint32 id, BlockSettings * curBlockSettings)
+AWDSkeletonJoint::write_joint(int fd, BlockSettings * curBlockSettings)
 {
     int num_written;
-    awd_uint32 child_id;
     AWDSkeletonJoint *child;
     awd_uint16 par_id_be;
     awd_uint16 id_be;
 
-    this->id = id;
 
     // Convert numbers to big-endian
     id_be = UI16(this->id);
@@ -185,15 +184,12 @@ AWDSkeletonJoint::write_joint(int fd, awd_uint32 id, BlockSettings * curBlockSet
     this->user_attributes->write_attributes(fd, curBlockSettings);
 
     // Write children
-    child_id = id+1;
     num_written = 1;
     child = this->first_child;
     while (child) {
         int num_children_written;
-
-        num_children_written = child->write_joint(fd, child_id, curBlockSettings);
-
-        child_id += num_children_written;
+        
+        num_children_written = child->write_joint(fd, curBlockSettings);
         num_written += num_children_written;
 
         child = child->next;
@@ -297,7 +293,7 @@ AWDSkeleton::write_body(int fd, BlockSettings * curBlockSettings)
 
     // Write joints (if any)
     if (this->root_joint != NULL)
-        this->root_joint->write_joint(fd, 1,  curBlockSettings);
+        this->root_joint->write_joint(fd, curBlockSettings);
 
     // Write user attributes
     this->user_attributes->write_attributes(fd,  curBlockSettings);

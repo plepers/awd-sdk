@@ -9,7 +9,6 @@ class AWDSkeletonJoint :
     public AWDAttrElement
 {
     private:
-        awd_uint16 id;
         awd_float64 *bind_mtx;
         int num_children;
 
@@ -20,10 +19,12 @@ class AWDSkeletonJoint :
     public:
         AWDSkeletonJoint *next;
 
-        AWDSkeletonJoint(const char *, awd_uint16, awd_float64 *);
+        AWDSkeletonJoint(const char *, awd_uint16, awd_float64 *, awd_uint16);
         ~AWDSkeletonJoint();
+    
+        awd_uint16 id;
 
-        int write_joint(int, awd_uint32, BlockSettings * );
+        int write_joint(int, BlockSettings * );
         int calc_length(BlockSettings * );
         int calc_num_children();
         awd_uint32 get_id();
